@@ -33,143 +33,44 @@
 		<?php echo $title_for_layout; ?>
 	</title>
 	<?php
-		echo $html->meta('icon');
+		//echo $html->meta('icon');
 		echo "\n";
 
-		echo $html->css('aqueous_light');
+		echo $css->link('aqueous_light');
 		echo "\n";
-		echo $html->css('cake.generic');
+		echo $css->link('cake.generic');
 		echo "\n";
-		echo $html->css('jquery.jgrowl');
+		echo $css->link('jquery.jgrowl');
 		echo "\n";
-		echo $html->css('ui.theme/ui.core');
+		echo $css->link('ui.theme/ui.core');
 		echo "\n";
-		echo $html->css('ui.theme/ui.theme');
+		echo $css->link('ui.theme/ui.theme');
 		echo "\n";
-		echo $html->css('ui.theme/ui.dialog');
+		echo $css->link('ui.theme/ui.dialog');
 		echo "\n";
-		echo $html->css('jquery.alerts');
-/*		echo $html->css('jquery.lightbox');
-		echo "\n";
-		echo $html->css('tree_component');
-		echo "\n";
-		echo $html->css('ui.dialog');
-		echo "\n";
-		echo $html->css('ui.core');
-		echo "\n";
-		echo $html->css('ui.theme');
-		echo "\n";*/
+		echo $css->link('jquery.alerts');
 
-		echo $javascript->link('jquery');
-		echo "\n";
-		echo $javascript->link('jquery.jgrowl');
-		echo "\n";
-		echo $javascript->link('jquery.ui');
-		echo "\n";
-		echo $javascript->link('jquery.alerts');
-/*		echo $javascript->link('jquery.jgrowl');
-		echo "\n";
-		echo $javascript->link('blockui');
-		echo "\n";
-		echo $javascript->link('jquery.timeago');
-		echo "\n";
-		echo $javascript->link('tree_component');
-		echo "\n";
-		echo $javascript->link('jquery.listen');
-		echo "\n";
-		echo $javascript->link('jquery.metadata');
-		echo "\n";
-		echo $javascript->link('swfupload');
-		echo "\n";
-		echo $javascript->link('swfupload.queue');
-		echo "\n";
-		echo $javascript->link('jquery.lightbox');
-		echo "\n";*/
-
-		echo $scripts_for_layout;
+		if (isset($styles_for_layout))
+		{
+			echo $styles_for_layout;
+		}			
   ?>
+<script type="text/javascript">
+	var rootLink = '<?php echo $html->url('/');?>';
+	var controllerLink = '<?php 
+		$controllerLink = $html->url(array('plugin' => $this->params['plugin'], 'controller' => $this->params['controller'], 'action' => false));
+		$controllerLink = explode('/', $controllerLink);
+		$controllerLink[count($controllerLink)-1] = '';
+		echo implode('/', $controllerLink);
+	?>';
+	var themeDir = '<?php echo $this->theme; ?>';
 
-  <script type="text/javascript">
-		var rootLink = '<?php echo $html->url('/');?>';
-		var controllerLink = '<?php 
-			$controllerLink = $html->url(array('plugin' => $this->params['plugin'], 'controller' => $this->params['controller'], 'action' => false));
-			$controllerLink = explode('/', $controllerLink);
-			$controllerLink[count($controllerLink)-1] = '';
-			echo implode('/', $controllerLink);
-		?>';
-		var themeDir = '<?php echo $this->theme; ?>';
-  		function refreshItems()
-  		{
-  			//$('.timeago').timeago();
-  		}
+    var swfu;
 
-    	var swfu;
-
-		$(document).bind("ajaxStop", function(request, settings){
-				refreshItems();
- 			}
- 		);
-
-        $(function()
-        {
-        	var flashMessage = '<?php $session->flash(); ?>';
-        	
-        	var authMessage = '<?php $session->flash('auth'); ?>';
-        	if (flashMessage != '')
-        	{
-        		$.jGrowl(flashMessage);
-        	}
-
-        	if (authMessage != '')
-        	{
-        		authMessage = authMessage.replace('<div id="authMessage" class="message">', '');
-        		authMessage = authMessage.replace('</div>', '');
-        		$.jGrowl(authMessage);
-        	}
-
-    		$("#genericDialog").dialog({
-    			autoOpen: false,
-    			bgiframe: true,
-    			modal: true,
-    			title: '',
-    			width: "350px",
-    			draggable: false,
-    			//hide: 'fade',
-    			//show: 'fade',
-    			position: 'top',
-    			overlay: {
-    				backgroundColor: '#000',
-    				opacity: 0.7
-    			},
-    			resizable: false
-    		});
-
-			refreshItems();
-
-			$(".submit input, button").live('mouseover', function() {$(this).addClass('hover');});
-			$(".submit input, button").live('mouseout', function() {$(this).removeClass('hover');});
-
-			$('.dialogLink').live('click', function () {
-					$("#genericDialog").html('<img src="<?php echo $html->url('/img/throbber.gif'); ?>" alt="" /><?php __('Loading'); ?>...');
-
-					$("#genericDialog").load($(this).attr('href'));
-
-					$("#genericDialog").dialog('option', 'title', $(this).attr('title'));
-
-					$("#genericDialog").dialog('open');
-					return false;
-				});
-
-			$("#layoutSearch").bind('focus', function() {$(this).val(''); });
-			$("#layoutSearch").bind('blur', function() {$(this).val('Search'); });
-
-			if (typeof pageScript != 'undefined')
-				pageScript(rootLink);
-
-			$.alerts.okButton = 'Yes';
-			$.alerts.cancelButton = 'No'; 
-        });
-  </script>
+    var flashMessage = '<?php $session->flash(); ?>';
+    
+    var authMessage = '<?php $session->flash('auth'); ?>';
+</script>  
 </head>
 <body>
 <div id="wrapper">
@@ -185,11 +86,13 @@
 				</h2>
 
 				<ul id="menu1" class="menu">
-						<?php if (isset($menuArray)) { echo $showMenu->menuList($menuArray, 'menu1', Router::url("", true), false, $menuadminMode); } ?>
+						<?php if (isset($menuArray)) echo $this->element(($menuadminMode ? 'menuEdit' : 'menu'), array('menuArray' => $menuArray,
+																						'menuId' => 'menu1'));?>
 				</ul>
 
 				<ul id="menu2" class="subnav menu">
-						<?php if (isset($menuArray)) { echo $showMenu->menuList($menuArray, 'menu2', Router::url("", true), false, $menuadminMode); } ?>
+						<?php if (isset($menuArray)) echo $this->element(($menuadminMode ? 'menuEdit' : 'menu'), array('menuArray' => $menuArray,
+																						'menuId' => 'menu2'));?>
 				</ul>
 		</div>
 
@@ -197,7 +100,8 @@
 		<tr style="border: 0px;">
 		<td id="sidebar">
 			<ul class="subnav menu sideboxes" id="menu3">
-				<?php if (isset($menuArray)) { echo $showMenu->menuList($menuArray, 'menu3', Router::url("", true), false, $menuadminMode); } ?>
+						<?php if (isset($menuArray)) echo $this->element(($menuadminMode ? 'menuEdit' : 'menu'), array('menuArray' => $menuArray,
+																						'menuId' => 'menu3'));?>
 			</ul>
 		</td>
 		<td id="contentArea">
@@ -215,12 +119,23 @@
 </div>
 </div>
 <div style="display: none;" id="genericDialog"></div>
+<?php echo $cakeDebug; ?>
+
+<?php 
+		echo $javascript->link('jquery');
+		echo "\n";
+		echo $javascript->link('jquery.jgrowl');
+		echo "\n";
+		echo $javascript->link('jquery.ui');
+		echo "\n";
+		echo $javascript->link('jquery.alerts');
+		echo "\n";
+		echo $javascript->link('functions');
+		
+		echo $scripts_for_layout;		
+?>
 <?php if (isset($adminMode) && $adminMode) : ?>
-	<?php echo $this->element('admin_links', $pluginList); ?>
+	<?php echo $this->element('admin_links', array('pluginList' => $pluginList, 'cache' => '+1 hour')); ?>
 <?php endif;	?>
-
-
-	<?php echo $cakeDebug; ?>
-
 </body>
 </html>
