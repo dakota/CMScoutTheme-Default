@@ -36,34 +36,42 @@
 		//echo $html->meta('icon');
 		echo "\n";
 
-		echo $css->link('aqueous_light');
+		echo $html->css('aqueous_light');
 		echo "\n";
-		echo $css->link('cake.generic');
+		echo $html->css('cake.generic');
 		echo "\n";
-		echo $css->link('jquery.jgrowl');
+		echo $html->css('jquery.jgrowl');
 		echo "\n";
-		echo $css->link('ui.theme/ui.core');
+		echo $html->css('ui.theme/ui.core');
 		echo "\n";
-		echo $css->link('ui.theme/ui.theme');
+		echo $html->css('ui.theme/ui.theme');
 		echo "\n";
-		echo $css->link('ui.theme/ui.dialog');
+		echo $html->css('ui.theme/ui.dialog');
 		echo "\n";
-		echo $css->link('jquery.alerts');
+		echo $html->css('jquery.alerts');
 
-		if (isset($styles_for_layout))
-		{
-			echo $styles_for_layout;
-		}			
+		echo $javascript->link('jquery');
+		echo "\n";
+		echo $javascript->link('jquery.jgrowl');
+		echo "\n";
+		echo $javascript->link('jquery.ui');
+		echo "\n";
+		echo $javascript->link('jquery.alerts');
+		echo "\n";
+		echo $javascript->link('functions');
+		
+		echo $scripts_for_layout;			
+		
   ?>
 <script type="text/javascript">
-	var rootLink = '<?php echo $html->url('/');?>';
+	var rootLink = '<?php echo $html->url('/', true);?>';
 	var controllerLink = '<?php 
 		$controllerLink = $html->url(array('plugin' => $this->params['plugin'], 'controller' => $this->params['controller'], 'action' => false));
 		$controllerLink = explode('/', $controllerLink);
 		$controllerLink[count($controllerLink)-1] = '';
 		echo implode('/', $controllerLink);
 	?>';
-	var themeDir = '<?php echo $this->theme; ?>';
+	var themeDir = rootLink + 'themed/<?php echo $this->theme; ?>/';
 
     var swfu;
 
@@ -86,12 +94,12 @@
 				</h2>
 
 				<ul id="menu1" class="menu">
-						<?php if (isset($menuArray)) echo $this->element(($menuadminMode ? 'menuEdit' : 'menu'), array('menuArray' => $menuArray,
+						<?php if (isset($menuArray)) echo $this->element((isset($menuadminMode) ? 'menuEdit' : 'menu'), array('menuArray' => $menuArray,
 																						'menuId' => 'menu1'));?>
 				</ul>
 
 				<ul id="menu2" class="subnav menu">
-						<?php if (isset($menuArray)) echo $this->element(($menuadminMode ? 'menuEdit' : 'menu'), array('menuArray' => $menuArray,
+						<?php if (isset($menuArray)) echo $this->element((isset($menuadminMode) ? 'menuEdit' : 'menu'), array('menuArray' => $menuArray,
 																						'menuId' => 'menu2'));?>
 				</ul>
 		</div>
@@ -100,7 +108,7 @@
 		<tr style="border: 0px;">
 		<td id="sidebar">
 			<ul class="subnav menu sideboxes" id="menu3">
-						<?php if (isset($menuArray)) echo $this->element(($menuadminMode ? 'menuEdit' : 'menu'), array('menuArray' => $menuArray,
+						<?php if (isset($menuArray)) echo $this->element((isset($menuadminMode) ? 'menuEdit' : 'menu'), array('menuArray' => $menuArray,
 																						'menuId' => 'menu3'));?>
 			</ul>
 		</td>
@@ -121,20 +129,7 @@
 <div style="display: none;" id="genericDialog"></div>
 <?php echo $cakeDebug; ?>
 
-<?php 
-		echo $javascript->link('jquery');
-		echo "\n";
-		echo $javascript->link('jquery.jgrowl');
-		echo "\n";
-		echo $javascript->link('jquery.ui');
-		echo "\n";
-		echo $javascript->link('jquery.alerts');
-		echo "\n";
-		echo $javascript->link('functions');
-		
-		echo $scripts_for_layout;		
-?>
-<?php if (isset($adminMode) && $adminMode) : ?>
+<?php if (isset($adminMode) && $adminMode) :?>
 	<?php echo $this->element('admin_links', array('pluginList' => $pluginList, 'cache' => '+1 hour')); ?>
 <?php endif;	?>
 </body>
